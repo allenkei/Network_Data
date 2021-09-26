@@ -22,7 +22,14 @@ avg_network_feature_atleast <- colMeans(test_atleast[9991:10000,])
 
 test_atmost <- gen_features_MCMC_valued_atmost(MCMC_list_atmost, network_before, node_attr, length(eta_atmost))
 avg_network_feature_atmost <- colMeans(test_atmost[9991:10000,])
-  
+
+for(i in 1:3){
+  plot(1:10000,test_atleast[,i]-avg_network_feature_atleast[i],type="l")
+  plot(1:10000,test_atmost[,i]-avg_network_feature_atmost[i],type="l")
+}
+
+
+# parameter learning
 par_iter <- 1000
 atleast_holder <- matrix(0,nrow=par_iter,ncol=length(eta_atleast))
 
@@ -50,15 +57,11 @@ for(iter in 1:par_iter){
   
 }
 
-
 colMeans(atleast_holder) - c(-1,2,1)
 apply(atleast_holder,2,sd)
 
 colMeans(atmost_holder) - c(2,-1,1)
 apply(atmost_holder,2,sd)
-
-
-
 
 ###############################################
 # Experiment 2: Parameter Matching (temporal) #
@@ -98,5 +101,3 @@ apply(atleast_holder,2,sd)
 
 colMeans(atmost_holder) - c(-1, 0.8, 0.4, 1)
 apply(atmost_holder,2,sd)
-
-
