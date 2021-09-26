@@ -54,14 +54,13 @@ for(iter in 1:4){
   start_time <- end_time
 }
 
-rm(edge_temp, y, end_time, i,j, iter, row_idx, start_time, track_i, track_j, 
-   cur_time, track_time, replacement)
+rm(edge_temp, y, end_time, i,j, iter, row_idx, start_time, track_i, track_j, cur_time, track_time, replacement)
 
 # parameter learning
-eta_atleast <- rep(0,6)
+eta_atleast <- rep(0,9)
 eta_atleast <- partial_stepping_atleast_temporal(20, 5000, 1, y_list, eta_atleast, node_attr) 
 eta_atleast <- newton_raphson_atleast_temporal(10, 20000, 1, y_list, eta_atleast, node_attr) 
 
-eta_atmost <- rep(0,6)
+eta_atmost <- rep(0,9)
 eta_atmost <- partial_stepping_atmost_temporal(20, 5000, 1, y_list, eta_atmost, node_attr)
-eta_atmost <- newton_raphson_atmost_temporal(2, 20000, 1, y_list, eta_atmost, node_attr) 
+eta_atmost <- newton_raphson_atmost_temporal(10, 20000, 1, y_list, eta_atmost, node_attr) 
