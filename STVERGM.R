@@ -16,8 +16,6 @@ eta_atmost <- c(2,-1,1)
 MCMC_list_atleast <- gen_MCMC_valued_atleast(10000, eta_atleast, network_before, node_attr, y_init)
 MCMC_list_atmost <- gen_MCMC_valued_atmost(10000, eta_atmost, network_before, m=5, node_attr, y_init)
 
-
-
 # check convergence
 test_atleast <- gen_features_MCMC_valued_atleast(MCMC_list_atleast, network_before, node_attr, length(eta_atleast))
 avg_network_feature_atleast <- colMeans(test_atleast[9991:10000,])
@@ -25,10 +23,10 @@ avg_network_feature_atleast <- colMeans(test_atleast[9991:10000,])
 test_atmost <- gen_features_MCMC_valued_atmost(MCMC_list_atmost, network_before, node_attr, length(eta_atmost))
 avg_network_feature_atmost <- colMeans(test_atmost[9991:10000,])
   
+par_iter <- 1000
+atleast_holder <- matrix(0,nrow=par_iter,ncol=length(eta_atleast))
 
-atleast_holder <- matrix(0,nrow=100,ncol=length(eta_atleast))
-
-for(iter in 1:1000){
+for(iter in 1:par_iter){
   
   network_augmentation <- MCMC_list_atleast[[10001-iter]]
   g_obs_atleast <- gen_feature_valued_atleast(network_augmentation, network_before, node_attr)
@@ -39,9 +37,9 @@ for(iter in 1:1000){
   
 }
 
-atmost_holder <- matrix(0,nrow=100,ncol=length(eta_atmost))
+atmost_holder <- matrix(0,nrow=par_iter,ncol=length(eta_atmost))
 
-for(iter in 1:1000){
+for(iter in 1:par_iter){
   
   network_diminution <- MCMC_list_atmost[[10001-iter]]
   g_obs_atmost <- gen_feature_valued_atmost(network_diminution, network_before, node_attr)
@@ -80,15 +78,7 @@ for(t in 2:20){
   MCMC_list_atleast <- gen_MCMC_valued_atleast(MCMC_length, eta_atleast, y_list[[t-1]], node_attr, y_init)
   MCMC_list_atmost <- gen_MCMC_valued_atmost(MCMC_length, eta_atmost, y_list[[t-1]], m=3, node_attr, y_init)
   y_list[[t]] <- construct_network_after(y_list[[t-1]],MCMC_list_atleast[[MCMC_length]],MCMC_list_atmost[[MCMC_length]])
-  cat('Done\n')
 }
-
-# check convergence
-MCMC_list_features_atleast <- gen_features_MCMC_valued_atleast(MCMC_list_atleast, y_list[[4]], node_attr, length(eta_atleast))
-MCMC_list_features_atmost <- gen_features_MCMC_valued_atmost(MCMC_list_atmost,y_list[[4]], node_attr, length(eta_atmost))
-index <- 1
-plot(1:200,MCMC_list_features_atleast[,index],type="l")
-plot(1:200,MCMC_list_features_atmost[,index],type="l")
 
 par_iter <- 1000
 atleast_holder <- atmost_holder <- matrix(0,nrow=par_iter,ncol=4)
@@ -102,7 +92,6 @@ for(i in 1:par_iter){
   eta_atmost <- partial_stepping_atmost_temporal(20, 200, 1, y_list, eta_atmost, node_attr)
   atmost_holder[i,] <- newton_raphson_atmost_temporal(5, 2000, 1, y_list, eta_atmost, node_attr)
 }
-
 
 colMeans(atleast_holder) - c(-2, 1.4, 0.4, 1)
 apply(atleast_holder,2,sd)
